@@ -7,6 +7,7 @@
     "knex": "dotenv -e .env.local knex"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv-cli": "^4.0.0",
     "knex": "^0.95.11",
     "mysql": "^2.18.1",
