@@ -1,7 +1,10 @@
 import db from '../../../../libs/db';
+import authApiForAdmin from '../../../../middlewares/admin/authApiForAdmin';
 
 export default async function handler (req, res) {
     if(req.method !== 'PUT') return res.status(401).end();
+
+    const auth = await authApiForAdmin(req, res);
 
     const { id } = req.query;
 
