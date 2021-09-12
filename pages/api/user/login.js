@@ -21,7 +21,7 @@ export default async function handler (req, res) {
                         .where(function() {
                             this.where({username})
                         })
-                        .orWhere({email})
+                        .andWhere({email})
                         .first();
 
     
