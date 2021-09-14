@@ -1,6 +1,16 @@
 import React, {useState} from 'react';
 import Cookies from 'js-cookie';
 import Router from 'next/router';
+import { unAuthPage } from '../../middlewares/user/authPage';
+
+
+export async function getServerSideProps (context) {
+    await unAuthPage(context);
+    
+    return {
+        props: {}
+    }
+}
 
 export default function Login () {
     const [fields, setFields] = useState({
@@ -23,7 +33,7 @@ export default function Login () {
         const loginRes = await loginReq.json();
         const { token } = loginRes;
         
-        Cookies.set('UserToken', token);
+        Cookies.set('userCookie', token);
 
         Router.push('/');
     }
