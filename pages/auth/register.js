@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import Router from 'next/router';
 
 export default function Register () {
     const [fields, setFields] = useState({
@@ -19,7 +20,6 @@ export default function Register () {
         })
 
         const registerRes = await registerReq.json();
-        console.log(registerRes);
     }
 
     function fieldHandler (e) {
