@@ -20,6 +20,8 @@ export default function Register () {
         })
 
         const registerRes = await registerReq.json();
+
+        Router.push('/auth/login');
     }
 
     function fieldHandler (e) {
