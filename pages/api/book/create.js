@@ -12,7 +12,7 @@ export default async function handler (req, res) {
 
     const create = await db('book').insert({tittle, author, publisher, description});
 
-    const createdBook = await db('book').where({id: create})
+    const createdBook = await db('book').where({id: create}).first();
 
     res.status(200);
     res.json({
