@@ -14,6 +14,8 @@ export async function getServerSideProps (context) {
 }
 
 export default function AdminLogin () {
+    const [status, setStatus] = useState('normal');
+
     const [field, setField] = useState({
         username: "",
         email: "",
@@ -23,6 +25,7 @@ export default function AdminLogin () {
     async function loginAdminHandler (e) {
         e.preventDefault();
 
+        setStatus('loading')
         const loginAdminReq = await fetch('/api/admin/login', {
             method: 'POST',
             headers: {
@@ -31,9 +34,13 @@ export default function AdminLogin () {
             body: JSON.stringify(field)
         });
 
-        const { token } = await loginAdminReq.json()
+        const { token, message } = await loginAdminReq.json()
+
+        if (!loginAdminReq.ok) return setStatus(`Error ${message}`)
         
         Cookies.set("adminCookie", token);
+
+        setStatus('succes');
 
         Router.push('/admin');
     }
@@ -60,6 +67,7 @@ export default function AdminLogin () {
                 <label>Password</label>
                 <input name="password" type="password" className="text-black block" onChange={fieldHandler}/>
                 <button className="bg-yellow-900 rounded mt-2">Login</button>
+                <p>Status: {status}</p>
             </form>
         </div>
     )
