@@ -5,7 +5,7 @@ import { unAuthPage } from '../../middlewares/user/authPage';
 
 
 export async function getServerSideProps (context) {
-    await unAuthPage(context);
+    // await unAuthPage(context);
     
     return {
         props: {}
@@ -19,9 +19,12 @@ export default function Login () {
         password: ""
     });
 
+    const [status, setStatus] = useState('normal');
+
     async function loginHandler(e) {
         e.preventDefault();
 
+        setStatus('loading')
         const loginReq = await fetch('/api/user/login', {
             method: "POST",
             headers: {
@@ -31,10 +34,14 @@ export default function Login () {
         })
 
         const loginRes = await loginReq.json();
+        if (!loginReq.ok) return setStatus(`error ${loginRes.message}`)
+
         const { token } = loginRes;
+        console.log(loginRes);
+        
         
         Cookies.set('userCookie', token);
-
+        setStatus('succes');
         Router.push('/');
     }
 
@@ -59,6 +66,7 @@ export default function Login () {
                 <label>Password</label>
                 <input onChange={fieldHandler} type="password" name="password" className="block text-black"/>
                 <button className="bg-yellow-900 rounded mt-2">Login</button>
+                <p>Status: {status}</p>
             </form>
         </div>
     )

@@ -29,7 +29,7 @@ export default function Home(props) {
       <h1 className="text-xl mb-7">Index</h1>
 
       {books.map((book) => 
-        <div className="text-white">
+        <div key={book.id} className="text-white">
           <p>{book.tittle}</p>
           <p>{book.author}</p>
           <p>{book.publisher}</p>
