@@ -1,4 +1,5 @@
 import { authPage } from "../../middlewares/admin/authPage";
+import Router from 'next/router';
 
 
 export async function getServerSideProps (context) {
@@ -23,6 +24,10 @@ export async function getServerSideProps (context) {
 export default function AdminHome (props) {
     const {token, data} = props;
 
+    function editHandler (id, e) {
+        Router.push('/admin/update/' + id);
+    }
+
     return (
         <div className="bg-black text-white min-h-screen">
             <div className="container mx-auto">
@@ -37,7 +42,7 @@ export default function AdminHome (props) {
                         <div className="w-4/12 border-r border-yellow-700">{books.author}</div>
                         <div className="w-4/12 border-r border-yellow-700">
                             <button className="w-2/12">Hapus</button>
-                            <button className="w-2/12">Edit</button>
+                            <button className="w-2/12" onClick={editHandler.bind(this, books.id)}>Edit</button>
                         </div>
                     </div>
                 )}
