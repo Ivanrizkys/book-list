@@ -8,9 +8,9 @@ export default async function handler (req, res) {
 
     const { id } = req.query;
 
-    const {tittle, author, publisher, description} = req.body;
+    const {tittle, author, publisher, description, image} = req.body;
 
-    const updateBook = await db('book').where({id}).update({tittle, author, publisher, description})
+    const updateBook = await db('book').where({id}).update({tittle, author, publisher, description, image})
 
     const resUpdateBook = await db('book').where({id}).first();
 
