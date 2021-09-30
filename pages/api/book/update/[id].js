@@ -1,6 +1,6 @@
 import db from '../../../../libs/db';
 import authApiForAdmin from '../../../../middlewares/admin/authApiForAdmin';
-import formidable from 'formidable';
+import getReq from '../../../../utils/getReq';
 
 const fs = require('fs');
 
@@ -17,40 +17,29 @@ export default async function handler (req, res) {
 
     const { id } = req.query;
 
-    const promise = new Promise((resolve, reject) => {
-        const form = new formidable.IncomingForm();
-        form.keepExtensions = true;
-        form.uploadDir = "./public/cover"
+    const {fields, files} = await getReq(req);
+    const {tittle, author, publisher, description} = fields;
 
-        form.parse(req, (err, fields, files) => {
-            if (err) reject(err);
-            resolve({fields,files})
+    if (!tittle || !author || !publisher || !description) return res.status(401).end()
+    if (files.image) {
+        const { image: { path } } = files;
+        const { image } = await db('book').select('image').where({id}).first();
+        fs.unlink(image, err => {
+            if (err) res.status(401).json({message: err});
         })
-    })
 
-    return promise.then( async ({fields, files}) => {
-        const {tittle, author, publisher, description} = fields;
-        if (!tittle || !author || !publisher || !description) return res.status(401).end()
-        
-        if (files.image) {
-            const { image: { path } } = files;
-            const { image } = await db('book').select('image').where({id}).first();
-            fs.unlink(image, err => {
-                if (err) console.log(err);
-            })
+        const upImageData = await db('book').where({id}).update({image: path});
+    }
 
-            const upImageData = await db('book').where({id}).update({image: path});
-        }
+    const updateBook = await db('book').where({id}).update({tittle, author, publisher, description});
+    const resUpdatedBook = await db('book').where({id}).first();
 
-        const updateBook = await db('book').where({id}).update({tittle, author, publisher, description});
-        const resUpdatedBook = await db('book').where({id}).first();
+    res.status(200);
+    res.json({
+        message: "update book succesfully",
+        data: resUpdatedBook
+    });
 
-        res.status(200);
-        res.json({
-            message: "update book succesfully",
-            data: resUpdatedBook
-        });
-        
-    })
+
 
 }
