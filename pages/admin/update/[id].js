@@ -1,5 +1,6 @@
 import { authPage } from "../../../middlewares/admin/authPage";
 import { useState } from "react";
+import Router from 'next/router';
 
 export async function getServerSideProps (context) {
     const { token } = await authPage(context) 
@@ -30,25 +31,39 @@ export default function Update (props) {
         author,
         publisher,
         description,
-        image
-        
+        image,
     });
-
+    
     async function updateHandler (e) {
         e.preventDefault();
-        
+
+        const formData = new FormData()
+        Object.entries(field).forEach(([key, values]) => {
+            formData.append(key, values)
+        })
+
         const updateReq = await fetch('/api/book/update/' + id, {
             method: "PUT",
             headers: {
                 "Authorization": "Bearer " + token,
-                "Content-Type": "application/json"
+                // "Content-Type": "application/json"
             },
-            body: JSON.stringify(field)
+            body: formData
         });
 
         const updateRes = await updateReq.json();
 
-        console.log(updateRes);
+        Router.push('/admin');
+        
+    }
+
+    function imageHandler (e) {
+        const getName = e.target.getAttribute('name');
+
+        setField({
+            ...field,
+            [getName]: e.target.files[0]
+        })
     }
 
     function fieldHandler (e) {
@@ -58,12 +73,14 @@ export default function Update (props) {
             ...field,
             [getName]: e.target.value
         });
+
+
     }
     return (
         <div className="container mx-auto bg-black min-h-screen text-white">
             <h1 className="text-2xl mb-10">Update Book</h1>
 
-            <form onSubmit={updateHandler}>
+            <form encType="multipart/from-data" onSubmit={updateHandler}>
                 <label>Tittle</label>
                 <input name="tittle" type="text" defaultValue={tittle} className="block text-black" onChange={fieldHandler}/>
                 <label>Author</label>
@@ -73,7 +90,7 @@ export default function Update (props) {
                 <label>Description</label>
                 <textarea name="description" defaultValue={description} id="" cols="30" rows="10" className="block text-black" onChange={fieldHandler}></textarea>
                 <label>Image</label>
-                <input name="image" type="file" defaultValue={image} className="block" onChange={fieldHandler}/>
+                <input name="image" type="file" className="block" onChange={imageHandler}/>
                 <button className="bg-yellow-900 rounded mt-3 py-1 px-8">Edit</button>
             </form>
         </div>
