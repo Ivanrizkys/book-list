@@ -11,7 +11,6 @@ export async function getServerSideProps (context) {
   });
 
   const { data } = await bookReq.json();
-
   return {
     props: {
       data    
@@ -24,12 +23,19 @@ export default function Home(props) {
 
   const [books, setBooks] = useState(data)
 
+  function urlReplace (url) {
+    const urls = `${url}`
+    const link = urls.replace("public", "").replace("\\/g", "/");
+    return link;
+
+  }
   return (
     <div className="bg-black min-h-screen text-white">
       <h1 className="text-xl mb-7">Index</h1>
 
-      {books.map((book) => 
+      {books.map((book) =>   
         <div key={book.id} className="text-white">
+          <img src={urlReplace(book.image)} alt=""/>
           <p>{book.tittle}</p>
           <p>{book.author}</p>
           <p>{book.publisher}</p>
