@@ -5,7 +5,7 @@ import { unAuthPage } from '../../middlewares/user/authPage';
 
 
 export async function getServerSideProps (context) {
-    // await unAuthPage(context);
+    await unAuthPage(context);
     
     return {
         props: {}
