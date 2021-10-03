@@ -7,11 +7,12 @@ export default async function handler (req, res) {
     const auth = await authApiForAdmin(req, res);
 
     const {id} = req.query;
-
     const deletedBook = await db('book').where({id}).del();
+    const bookUpdated = await db('book');
     
     res.status(200);
     res.json({
-        message: "delete data succesfully"
+        message: "delete data succesfully",
+        data: bookUpdated
     })
 }
