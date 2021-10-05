@@ -1,5 +1,6 @@
+import React, {useState, useEffect} from 'react';
+import urlReplace from '../utils/urlReplace';
 import { authPage } from "../middlewares/user/authPage";
-import React, {useState} from 'react';
 
 export async function getServerSideProps (context) {
   const { token } = await authPage(context);
@@ -21,19 +22,30 @@ export async function getServerSideProps (context) {
 export default function Home(props) {
   const { data } = props;
 
-  const [books, setBooks] = useState(data)
+  const [books, setBooks] = useState(data);
+  const [searchValue, setSearchValue] = useState("");
 
-  function urlReplace (url) {
-    const urls = `${url}`
-    const link = urls.replace("public", "").replace("\\/g", "/");
-    return link;
-
+  function searchHandler (e) {
+    setSearchValue(e.target.value);
   }
+  useEffect(() => {
+    const result = data.filter(({tittle, author, publisher, description}) => {
+      return (
+        tittle.toLowerCase().includes(searchValue.toLowerCase()) ||
+        author.toLowerCase().includes(searchValue.toLowerCase()) ||
+        publisher.toLowerCase().includes(searchValue.toLowerCase()) ||
+        description.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    });
+    setBooks(result);
+  }, [searchValue]);  
   return (
     <div className="bg-black min-h-screen text-white">
-      <h1 className="text-xl mb-7">Index</h1>
-
-      {books.map((book) =>   
+      <h1 className="text-xl mb-1 text-center">Index</h1>
+      <input onChange={searchHandler} type="text" placeholder="Search" className="block mx-auto text-black mb-10"/>
+      
+      {books.length > 0 ?
+      books.map((book) =>   
         <div key={book.id} className="text-white">
           <img src={urlReplace(book.image)} alt=""/>
           <p>{book.tittle}</p>
@@ -42,9 +54,8 @@ export default function Home(props) {
           <p>{book.description}</p>
           <hr className="bg-white text-white mb-3"/>
         </div>
-      )}
-
-
+      ) :
+      <p className="text-center">Not Found .... 😥</p>}
     </div>
   )
 }
