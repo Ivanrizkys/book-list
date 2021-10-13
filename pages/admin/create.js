@@ -80,7 +80,7 @@ export default function Create (props) {
                 <textarea name="description" id="" cols="30" rows="10" className="block text-black" onChange={fieldHandler}></textarea>
                 <label>Image</label>
                 <input name="image" type="file" className="block" onChange={imageHandler}/>
-                <button className="bg-yellow-900 rounded mt-3 py-1 px-8">Edit</button>
+                <button className="bg-yellow-900 rounded mt-3 py-1 px-8">Create</button>
                 <p>Status {status}</p>
             </form>
         </div>
