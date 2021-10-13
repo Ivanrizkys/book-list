@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { authPage } from "../middlewares/user/authPage";
 import Book from '../components/Book';
+import Head from 'next/head'
 
 export async function getServerSideProps (context) {
   const { token } = await authPage(context);
@@ -39,10 +40,16 @@ export default function Home({data}) {
   }, [searchValue]);
 
   return (
-    <div className="bg-black min-h-screen text-white">
-      <h1 className="text-xl mb-1 text-center">Index</h1>
-      <input onChange={searchHandler} type="text" placeholder="Search" className="block mx-auto text-black mb-10"/>
-      <Book books={books}/>
-    </div>
+    <>
+      <Head>
+        <title>E-Library</title>
+      </Head>
+      <div className="bg-black min-h-screen text-white">
+        <h1 className="text-xl mb-1 text-center">Index</h1>
+        <input onChange={searchHandler} type="text" placeholder="Search" className="block mx-auto text-black mb-10"/>
+        <Book books={books}/>
+      </div>
+    </>
+
   )
 }
