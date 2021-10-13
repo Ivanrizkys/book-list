@@ -2,6 +2,8 @@ import Router from 'next/router';
 import { useState, useEffect } from "react";
 import { authPage } from "../../middlewares/admin/authPage";
 import BookAdmin from '../../components/BookAdmin';
+import Navbar from '../../components/Navbar';
+import TittleAdmin from '../../components/TittleAdmin';
 
 export async function getServerSideProps (context) {
     const { token } = await authPage(context);
@@ -30,7 +32,6 @@ export default function AdminHome ({token, data}) {
 
     async function deleteHandler (id, tittle, e) {
         e.preventDefault();
-        console.log(tittle)
         const ask = confirm(`Apakah anda yakin akan menghapus buku ${tittle}`);
         if (!ask) return;
 
@@ -60,16 +61,20 @@ export default function AdminHome ({token, data}) {
     }, [searchValue]);
 
     return (
-        <div className="bg-black text-white min-h-screen">
-            <div className="container mx-auto">
-                <h1 className="text-xl text-center mb-1">Admin Page</h1>
-                <input onChange={searchHandler} type="text" placeholder="Search" className="block mx-auto mb-10 text-black"/>
+        <>
+            <TittleAdmin/>
+            <div className="bg-black text-white min-h-screen">
+                <div className="container mx-auto">
+                    <Navbar/>
+                    <h1 className="text-xl text-center mb-5">Admin Page</h1>
+                    <input onChange={searchHandler} type="text" placeholder="Search" className="block mx-auto mb-10 text-black"/>
+                </div>
+                <BookAdmin 
+                book={book}
+                deleteHandler={deleteHandler}
+                editHandler={editHandler}
+                />
             </div>
-            <BookAdmin 
-            book={book}
-            deleteHandler={deleteHandler}
-            editHandler={editHandler}
-            />
-        </div>
+        </>
     )
 }
