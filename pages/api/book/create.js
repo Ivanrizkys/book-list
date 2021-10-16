@@ -16,9 +16,9 @@ export default async function handler (req, res) {
     const {fields, files} = await getReq(req);
     const { tittle, author, publisher, description} = fields;
     
-    if(!tittle || !author || !publisher) return res.status(401).end();
+    if(!tittle || !author || !publisher || !description ||!files.image) return res.status(401).end();
 
-    if (!files.image) return res.status(401).end();
+    // if (!files.image) return res.status(401).end();
 
     const { image:{ path } } = files;
     const create = await db('book').insert({tittle, author, publisher, description, image: path});
